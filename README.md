@@ -229,12 +229,4 @@ PointCoverage@K = \max_{r \leq K} \frac{\text{区域内点数}}{\text{总点数}
   <b>图三：</b>全局队列检索结果图
 </p>
 
-<div align="center">
-  <img src="repo_img/3.3.png" width="33%" alt="图四-1">
-  <img src="repo_img/3.4.png" width="33%" alt="图四-2">
-  <img src="repo_img/3.5.png" width="33%" alt="图四-3">
-</div>
 
-<p align="center">
-  <b>图四：</b>图像局部检索结果图
-</p>
