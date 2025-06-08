@@ -22,6 +22,7 @@
   - [4.1 文本特征提取方法](#41-文本特征提取方法)
   - [4.2 检索系统](#42-检索系统)
   - [4.3 效果评估](#43-效果评估)
+- [五、总结与展望](#五总结与展望)
 
 ---
 
@@ -150,41 +151,26 @@ ALIGN的优势在于：
 
 #### 3.2.1 Precision@K (P@K)
 表示 Top-K 候选结果中，IoU 超过阈值（默认为 0.5）的候选区域的比例。
-\[
-P@K = \frac{\text{Top-K 中命中的数量}}{K}
-\]
+$$P@K = \frac{\text{Top-K 中命中的数量}}{K}$$
 
 #### 3.2.2 Recall@K (R@K)
-表示在 Top-K 候选结果中，是否至少有一个候选区域与 Ground Truth 命中（IoU ≥ 阈值）。
-\[
-R@K = \begin{cases}
-1 & \text{如果 Top-K 中至少有一个命中} \\
-0 & \text{否则}
-\end{cases}
-\]
+表示在 Top-K 候选结果中，是否至少有一个候选区域与 Ground Truth 命中（IoU ≥ 阈值）。  
+如果 Top-K 中至少有一个命中，则 R@K = 1；否则 R@K = 0。
 
 #### 3.2.3 Mean Average Precision (MAP)
 表示模型在不同查询上的平均检索性能，衡量正确结果的排名情况。
-\[
-MAP = \frac{1}{N} \sum_{i=1}^{N} \frac{1}{rank_i}
-\]
-其中 \( rank_i \) 是第一个正确结果的排名（1-based）。
+$$MAP = \frac{1}{N} \sum_{i=1}^{N} \frac{1}{rank_i}$$
+其中 $rank_i$ 是第一个正确结果的排名（1-based）。
 
 #### 3.2.4 Normalized Discounted Cumulative Gain (NDCG)
 衡量正确结果在检索排序中的重要性，排名越靠前奖励越高。
-\[
-DCG@K = \sum_{i=1}^{K} \frac{rel(i)}{\log_2(i+1)}
-\]
+$$DCG@K = \sum_{i=1}^{K} \frac{rel(i)}{\log_2(i+1)}$$
 由于通常只有一个正确结果，IDCG=1，因此：
-\[
-NDCG@K = \frac{DCG@K}{IDCG@K}
-\]
+$$NDCG@K = \frac{DCG@K}{IDCG@K}$$
 
 #### 3.2.5 PointCoverage@K
 衡量预测区域对 Ground Truth 轨迹点的覆盖率（相对所有轨迹点）。
-\[
-PointCoverage@K = \max_{r \leq K} \frac{\text{区域内点数}}{\text{总点数}}
-\]
+$$PointCoverage@K = \max_{r \leq K} \frac{\text{区域内点数}}{\text{总点数}}$$
 
 ---
 
@@ -224,7 +210,7 @@ PointCoverage@K = \max_{r \leq K} \frac{\text{区域内点数}}{\text{总点数}
 - 全局队列检索：输入查询文本在整个图像区域的检索数据库中进行匹配，旨在评估跨图像的全局检索能力。
 - 图像局部检索：输入查询文本仅在对应 caption 关联的图像的候选区域中进行检索，旨在验证模型在图像内部的局部语义对齐和目标检测能力。
 
-#### 全局检索
+#### 4.3.1 全局检索
 
 <div align="center">
   <img src="repo_img/3.1.png" width="45%" alt="图三-1">
@@ -237,7 +223,7 @@ PointCoverage@K = \max_{r \leq K} \frac{\text{区域内点数}}{\text{总点数}
 
 在全局检索场景下，输入的查询文本为 "a butterfly on a yellow flower"，该文本并未直接来源于数据集中某一特定图像的标注。模型的 Rank-1 结果显示，与检索文本的语义高度匹配，尤其准确地检测到了 "yellow flower" 这一关键概念。同时，模型在预测区域中也较好地捕捉到了 "on" 的空间关系，展示了较强的跨图像检索能力。然而，Rank-2 结果尽管分数相近，却仅部分匹配到了 "on a yellow" 片段，未能完整地复现查询文本的全部语义，揭示了模型在排序精度上的潜在改进空间。
 
-#### 局部检索
+#### 4.3.2 局部检索
 
 <div align="center">
   <img src="repo_img/3.3.png" width="30%" alt="图四-1">
@@ -255,10 +241,8 @@ PointCoverage@K = \max_{r \leq K} \frac{\text{区域内点数}}{\text{总点数}
 
 ### 五、总结与展望
 
-#### 总结
 本项目初步构建了基于 OID Localized Narratives 的图文检索原型系统，探索了多模态模型在全局与局部检索任务中的性能表现。实验结果表明，模型在全局检索场景中能够较好地匹配查询文本的语义，在局部检索中也能捕捉到 caption 中的关键字段。然而，在轨迹点分散及复杂场景下，模型在 PointCoverage 等指标上仍存在性能不足。
 
-#### 展望
 后续工作可从以下方向进行深入研究：
 - 对预训练模型进行微调（fine-tuning），以提升模型在目标检索任务上的特定性能。
 - 设计更符合轨迹检测的分类头模块，优化模型对稀疏或分散轨迹点的检测能力。
